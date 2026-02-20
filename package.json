@@ -1,6 +1,9 @@
 {
-  "dependencies": {
-    "express-rate-limit": "^8.2.1",
-    "helmet": "^8.1.0"
+  "name": "hospital-resource-intelligence",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "start": "cd backend && npm install && node server.js"
   }
 }
