@@ -3,7 +3,8 @@ const cors = require("cors");
 const helmet = require("helmet");
 
 const app = express();
-const PORT = 5001;
+const PORT = process.env.PORT || 5001;
+
 
 // ===== Security =====
 app.use(helmet());
