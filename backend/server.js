@@ -135,11 +135,22 @@ app.get("/", (req, res) => {
 });
 
 // ===== 404 =====
-app.use((req, res) => {
-  res.status(404).json({ success: false, error: "Route not found." });
+//app.use((req, res) => {
+  //res.status(404).json({ success: false, error: "Route not found." });
+//
+
+/// ===== Serve Frontend (Production) =====
+const path = require("path");
+
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
+
 
 // ===== Start =====
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
