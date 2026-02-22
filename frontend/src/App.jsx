@@ -212,11 +212,22 @@ function SummaryCards({ admissions, beds, alerts }) {
    Admission Forecast panel
    ========================================================================= */
 
-function ForecastPanel({ forecast }) {
-  const depts = forecast?.data || [];
-  const [sel, setSel] = useState(depts[0]?.departmentId || "er");
-  const dept = depts.find((d) => d.departmentId === sel) || depts[0];
-  if (!dept) return null;
+   function ForecastPanel({ forecast }) {
+    const depts = forecast?.data || [];
+  
+    const [sel, setSel] = useState("er");
+  
+    // Ensure selected department is valid after data loads
+    useEffect(() => {
+      if (depts.length > 0 && !depts.find(d => d.departmentId === sel)) {
+        setSel(depts[0].departmentId);
+      }
+    }, [depts, sel]);
+  
+    const dept = depts.find((d) => d.departmentId === sel) || depts[0];
+  
+    if (!dept) return null;
+  
 
   const chart = [
     ...dept.historical.map((h) => ({ date: h.date.slice(5), actual: h.admissions })),
