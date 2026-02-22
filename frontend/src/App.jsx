@@ -28,6 +28,7 @@ async function apiPost(path, body) {
 
 async function loadAll() {
   const keys = ["admissions", "beds", "bedPreds", "staffing", "alerts", "forecast"];
+
   const results = await Promise.allSettled([
     api("/admissions"),
     api("/beds"),
@@ -39,9 +40,11 @@ async function loadAll() {
 
   const out = {};
   let failures = 0;
+
   results.forEach((r, i) => {
     if (r.status === "fulfilled") {
-      out[keys[i]] = r.value;
+      // IMPORTANT FIX: store only .data
+      out[keys[i]] = r.value?.data || null;
     } else {
       out[keys[i]] = null;
       failures++;
@@ -49,9 +52,13 @@ async function loadAll() {
     }
   });
 
-  if (failures === keys.length) throw new Error("All API endpoints are unreachable.");
+  if (failures === keys.length) {
+    throw new Error("All API endpoints are unreachable.");
+  }
+
   return out;
 }
+
 
 /* =========================================================================
    Colour palette & tiny utilities
@@ -213,9 +220,9 @@ function SummaryCards({ admissions, beds, alerts }) {
    ========================================================================= */
 
    function ForecastPanel({ forecast }) {
-    const depts = forecast?.data || [];
+    const depts = forecast || [];
   
-    const [sel, setSel] = useState("er");
+    const [sel, setSel] = useState(depts[0]?.departmentId || "er");
   
     useEffect(() => {
       if (depts.length > 0 && !depts.find(d => d.departmentId === sel)) {
@@ -225,9 +232,7 @@ function SummaryCards({ admissions, beds, alerts }) {
   
     if (depts.length === 0) return null;
   
-    const dept = depts.find(d => d.departmentId === sel) || depts[0];
-  
-  
+    const dept = depts.find((d) => d.departmentId === sel) || depts[0];
   
 
   const chart = [
