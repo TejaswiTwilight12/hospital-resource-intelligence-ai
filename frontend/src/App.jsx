@@ -213,23 +213,20 @@ function SummaryCards({ admissions, beds, alerts }) {
    ========================================================================= */
 
    function ForecastPanel({ forecast }) {
-    if (!forecast || !forecast.data || forecast.data.length === 0) {
-      return (
-        <div style={{
-          background: "#1e293b",
-          border: "1px solid #334155",
-          borderRadius: 14,
-          padding: 20,
-          color: "#94a3b8"
-        }}>
-          Forecast data not available
-        </div>
-      );
-    }
+    const depts = forecast?.data || [];
   
-    const depts = forecast.data;
-    const [sel, setSel] = useState(depts[0].departmentId);
+    const [sel, setSel] = useState("er");
+  
+    useEffect(() => {
+      if (depts.length > 0 && !depts.find(d => d.departmentId === sel)) {
+        setSel(depts[0].departmentId);
+      }
+    }, [depts, sel]);
+  
+    if (depts.length === 0) return null;
+  
     const dept = depts.find(d => d.departmentId === sel) || depts[0];
+  
   
   
 
