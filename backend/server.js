@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -129,28 +130,25 @@ app.post("/forecast", (req, res) => {
   res.json({ success: true, data: generateForecast() });
 });
 
-// ===== Root =====
-app.get("/", (req, res) => {
+// ===== Root API =====
+app.get("/api", (req, res) => {
   res.json({ name: "Hospital Resource Intelligence API" });
 });
 
-// ===== 404 =====
-//app.use((req, res) => {
-  //res.status(404).json({ success: false, error: "Route not found." });
-//
-
-/// ===== Serve Frontend (Production) =====
-const path = require("path");
-
-app.use(express.static(path.join(__dirname, "public")));
+// ===== Serve Frontend =====
+const publicPath = path.join(__dirname, "public");
+app.use(express.static(publicPath));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(publicPath, "index.html"));
 });
 
+// ===== 404 =====
+app.use((req, res) => {
+  res.status(404).json({ success: false, error: "Route not found." });
+});
 
 // ===== Start =====
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
-
