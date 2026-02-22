@@ -213,20 +213,24 @@ function SummaryCards({ admissions, beds, alerts }) {
    ========================================================================= */
 
    function ForecastPanel({ forecast }) {
-    const depts = forecast?.data || [];
+    if (!forecast || !forecast.data || forecast.data.length === 0) {
+      return (
+        <div style={{
+          background: "#1e293b",
+          border: "1px solid #334155",
+          borderRadius: 14,
+          padding: 20,
+          color: "#94a3b8"
+        }}>
+          Forecast data not available
+        </div>
+      );
+    }
   
-    const [sel, setSel] = useState("er");
+    const depts = forecast.data;
+    const [sel, setSel] = useState(depts[0].departmentId);
+    const dept = depts.find(d => d.departmentId === sel) || depts[0];
   
-    // Ensure selected department is valid after data loads
-    useEffect(() => {
-      if (depts.length > 0 && !depts.find(d => d.departmentId === sel)) {
-        setSel(depts[0].departmentId);
-      }
-    }, [depts, sel]);
-  
-    const dept = depts.find((d) => d.departmentId === sel) || depts[0];
-  
-    if (!dept) return null;
   
 
   const chart = [
