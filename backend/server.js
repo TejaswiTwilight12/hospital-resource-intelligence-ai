@@ -145,9 +145,9 @@ app.get("*", (req, res) => {
 });
 
 // ===== 404 =====
-app.use((req, res) => {
-  res.status(404).json({ success: false, error: "Route not found." });
-});
+//app.use((req, res) => {
+  //res.status(404).json({ success: false, error: "Route not found." });
+
 
 // ===== Start =====
 app.listen(PORT, () => {
