@@ -140,9 +140,21 @@ const publicPath = path.join(__dirname, "../frontend/dist");
 
 app.use(express.static(publicPath));
 
-app.get("*", (req, res) => {
+app.get("*", (req, res, next) => {
+  // If request starts with API route, skip
+  if (
+    req.path.startsWith("/admissions") ||
+    req.path.startsWith("/beds") ||
+    req.path.startsWith("/staffing") ||
+    req.path.startsWith("/alerts") ||
+    req.path.startsWith("/forecast")
+  ) {
+    return next();
+  }
+
   res.sendFile(path.join(publicPath, "index.html"));
 });
+
 
 // ===== 404 =====
 //app.use((req, res) => {
