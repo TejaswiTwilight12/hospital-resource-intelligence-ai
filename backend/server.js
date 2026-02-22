@@ -122,11 +122,11 @@ function generateForecast() {
   });
 }
 
-app.get("/forecast", (req, res) => {
+app.get("/api/forecast", (req, res) => {
   res.json({ success: true, data: generateForecast() });
 });
 
-app.post("/forecast", (req, res) => {
+app.post("/api/forecast", (req, res) => {
   res.json({ success: true, data: generateForecast() });
 });
 
@@ -135,21 +135,32 @@ app.get("/api", (req, res) => {
   res.json({ name: "Hospital Resource Intelligence API" });
 });
 
-// ===== Serve Frontend =====
-const publicPath = path.join(__dirname, "../frontend/dist");
+/// ✅ All API routes with handlers here
 
+app.get("/api/admissions", (req, res) => {
+  res.json({ success: true, data: generateAdmissions() });
+});
+app.get("/api/beds", (req, res) => {
+  res.json({ success: true, data: generateAdmissions() });
+});
+app.get("/api/beds/predictions", (req, res) => {
+  res.json({ success: true, data: generateAdmissions() });
+});
+app.get("/api/staffing", (req, res) => {
+  res.json({ success: true, data: generateAdmissions() });
+});
+app.get("/api/alerts", (req, res) => {
+  res.json({ success: true, data: generateAdmissions() });
+});
+// ✅ THEN static serving
+const publicPath = path.join(__dirname, "../frontend/dist");
 app.use(express.static(publicPath));
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(publicPath, "index.html"));
 });
 
-// ===== 404 =====
-//app.use((req, res) => {
-  //res.status(404).json({ success: false, error: "Route not found." });
-
-
-// ===== Start =====
+// ✅ START
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
