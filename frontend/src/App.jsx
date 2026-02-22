@@ -8,14 +8,16 @@ import {
    API helpers — all requests go through the Vite proxy (/api → :4000)
    ========================================================================= */
 
-async function api(path) {
-  const res = await fetch(`/api${path}`);
+   async function api(path) {
+    const res = await fetch(`${path}`);
+  
   if (!res.ok) throw new Error(`API ${path} failed (${res.status})`);
   return res.json();
 }
 
 async function apiPost(path, body) {
-  const res = await fetch(`/api${path}`, {
+  const res = await fetch(`${path}`, {
+
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
