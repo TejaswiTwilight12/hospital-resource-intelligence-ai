@@ -43,8 +43,8 @@ async function loadAll() {
 
   results.forEach((r, i) => {
     if (r.status === "fulfilled") {
-      // IMPORTANT FIX: store only .data
-      out[keys[i]] = r.value?.data || null;
+      // KEEP FULL OBJECT
+      out[keys[i]] = r.value || null;
     } else {
       out[keys[i]] = null;
       failures++;
@@ -220,21 +220,24 @@ function SummaryCards({ admissions, beds, alerts }) {
    ========================================================================= */
 
    function ForecastPanel({ forecast }) {
-    const depts = forecast || [];
+    const depts = forecast?.data || [];
   
-    const [sel, setSel] = useState(depts[0]?.departmentId || "er");
+    const [sel, setSel] = useState(
+      depts.length > 0 ? depts[0].departmentId : "er"
+    );
   
     useEffect(() => {
       if (depts.length > 0 && !depts.find(d => d.departmentId === sel)) {
         setSel(depts[0].departmentId);
       }
-    }, [depts, sel]);
+    }, [depts]);
   
-    if (depts.length === 0) return null;
+    if (!forecast || !forecast.data || forecast.data.length === 0) {
+      return null;
+    }
   
     const dept = depts.find((d) => d.departmentId === sel) || depts[0];
   
-
   const chart = [
     ...dept.historical.map((h) => ({ date: h.date.slice(5), actual: h.admissions })),
     ...dept.forecast.map((f) => ({ date: f.date.slice(5), predicted: f.predicted, lower: f.lower, upper: f.upper })),
